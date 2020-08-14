@@ -164,12 +164,10 @@ class Inventory:
 
 #
 # END OF CLASS
-#
-     
-inventory = Inventory()          
+#         
 
 # LISTING ALL CATAGORIES
-def list_all_catagories():
+def list_all_catagories(inventory):
     print("\t\t---Listing All Catagories---")
     try:
         if inventory.inventoryLog != "":
@@ -184,7 +182,7 @@ def list_all_catagories():
         print("---Search Complete---")
 
 # lIST ALL PRODUCTS IN CATAGORY
-def list_all_products_in_category():
+def list_all_products_in_category(inventory):
     print("\t\t--Listing Products in Catagory--")
     category = Catagory(input("Catagory to Search: ").capitalize())
     if category.name not in inventory.inventoryLog.keys():
@@ -200,7 +198,7 @@ def list_all_products_in_category():
             print("---Search Complete---")
 
 # LIST ALL PRODUCT INFO THROUGH NAME
-def search_product_through_name():
+def search_product_through_name(inventory):
     print("\t\t--Searching Product through Name--")
     category = Catagory(input("Catagory Name(Optional): ").capitalize())
     product = Product(input("Product Name: ").capitalize())
@@ -225,7 +223,7 @@ def search_product_through_name():
         print("\t\t---Seach Complete---")
 
 # LIST ALL PRODUCT INFO THROUGH ID
-def search_product_through_ID():
+def search_product_through_ID(inventory):
     print("\t\t---Search Product through ID---")
     try:
         counter = 0
@@ -246,7 +244,7 @@ def search_product_through_ID():
         print("\t\t---Seach Complete---")
 
 # TOTAL INVENTORY PRICE
-def print_total_inventory_price():
+def print_total_inventory_price(inventory):
     print("\t\t---Total Inventory Price---")
     product_price=0
     for products in inventory.inventoryLog.values():
@@ -255,7 +253,7 @@ def print_total_inventory_price():
     print("${}".format(product_price))
 
 # LIST THE WHOLE INVENTORY
-def list_all_inventory():
+def list_all_inventory(inventory):
     print("\t\t---Listing All Inventory---")
     try:
         for category, products in inventory.inventoryLog.items():
@@ -359,115 +357,118 @@ def info():
 def enter():
     input("Back")
 
-#  Main app test: 1
-inventory = Inventory()
-# Main screen
-while True:
-    mainMenu = main_menu()
-    if mainMenu == 1:
-        # screen for "Enter"
-        while True:
-            subMenu = sub_menu()
-            # screen for "Search"
-            if subMenu == 1:
-                while True:
-                    subMenuOne = sub_menuOne()
-                    # search product through ID
-                    if  subMenuOne == 1:
-                        search_product_through_ID()
-                        enter()
-                    # Search product through name
-                    elif subMenuOne == 2:
-                        search_product_through_name()
-                        enter()
-                    # Search category
-                    elif subMenuOne == 3:
-                        while True:
-                            subMenuOneCata = sub_menuOneCata()
-                            # List All Catagories
-                            if subMenuOneCata == 1:
-                                list_all_catagories()
-                                enter()
-                            # All Products in Catagories
-                            elif subMenuOneCata == 2:
-                                list_all_products_in_category()
-                                enter()
-                            # Go Back
-                            elif subMenuOneCata ==3:
-                                break
-                    # Back key
-                    elif subMenuOne == 4:
-                        break
-            # Screen for "add/remove" products
-            elif subMenu == 2:
-                while True:
-                    subMenuTwo = sub_menuTwo()
-                    # Create a new product and new category
-                    if subMenuTwo == 1:
-                        inventory.add_to_inventory_new_category()
-                        enter()
-                    # Add a new product ot existing category
-                    elif subMenuTwo == 2:
-                        inventory.add_product_to_existing_category()
-                        enter()
-                    # Delete a product in a existing category
-                    elif subMenuTwo == 3:
-                        inventory.delete_products_inside_catagories()
-                        enter()
-                    # Change Products Info
-                    elif subMenuTwo == 4:
-                        while True:
-                            infoChange = sub_menuTwo_infochange()
-                            # Change ID
-                            if infoChange == 1:
-                                inventory.change_product_price()
-                                enter()
-                            # Change Quantity
-                            elif infoChange == 2:
-                                inventory.change_product_quantity()
-                                enter()
-                            # Change Price
-                            elif infoChange == 3:
-                                inventory.change_product_id()
-                                enter()
-                            # Go back
-                            elif infoChange == 4:
-                                break
-                    # Go back
-                    elif subMenuTwo == 5:
-                        break
-            # Screen for "add/remove catagories"
-            elif subMenu == 3:
-                while True:
-                    subMenuThree = sub_menuthree()
-                    # Create a new Catagory and a new product
-                    if subMenuThree == 1:
-                        inventory.add_to_inventory_new_category()
-                        enter()
-                    # Delete a existing category
-                    elif subMenuThree == 2:
-                        list_all_catagories()
-                        inventory.deleting_a_category()
-                        enter()
-                    # Go back
-                    elif subMenuThree == 3:
-                        break
-            # Screen for "Total inventory price"
-            elif subMenu == 4:
-                print_total_inventory_price()
-                enter()
-            # Screen for "Full inventory list"
-            elif subMenu == 5:
-                list_all_inventory()
-                enter()
-            # Back key to go back to sub menu
-            elif subMenu == 6:
-                break
-    # Pogram Info 
-    elif mainMenu == 2:
-        pass
-        break
-    # Quit Program
-    elif mainMenu == 3:
-        print("Thank you!")
-        break
+def main():
+    initInventory = Inventory()
+    # Main screen
+    while True:
+        mainMenu = main_menu()
+        if mainMenu == 1:
+            # screen for "Enter"
+            while True:
+                subMenu = sub_menu()
+                # screen for "Search"
+                if subMenu == 1:
+                    while True:
+                        subMenuOne = sub_menuOne()
+                        # search product through ID
+                        if  subMenuOne == 1:
+                            search_product_through_ID(initInventory)
+                            enter()
+                        # Search product through name
+                        elif subMenuOne == 2:
+                            search_product_through_name(initInventory)
+                            enter()
+                        # Search category
+                        elif subMenuOne == 3:
+                            while True:
+                                subMenuOneCata = sub_menuOneCata()
+                                # List All Catagories
+                                if subMenuOneCata == 1:
+                                    list_all_catagories(initInventory)
+                                    enter()
+                                # All Products in Catagories
+                                elif subMenuOneCata == 2:
+                                    list_all_products_in_category(initInventory)
+                                    enter()
+                                # Go Back
+                                elif subMenuOneCata ==3:
+                                    break
+                        # Back key
+                        elif subMenuOne == 4:
+                            break
+                # Screen for "add/remove" products
+                elif subMenu == 2:
+                    while True:
+                        subMenuTwo = sub_menuTwo()
+                        # Create a new product and new category
+                        if subMenuTwo == 1:
+                            initInventory.add_to_inventory_new_category()
+                            enter()
+                        # Add a new product ot existing category
+                        elif subMenuTwo == 2:
+                            initInventory.add_product_to_existing_category()
+                            enter()
+                        # Delete a product in a existing category
+                        elif subMenuTwo == 3:
+                            initInventory.delete_products_inside_catagories()
+                            enter()
+                        # Change Products Info
+                        elif subMenuTwo == 4:
+                            while True:
+                                infoChange = sub_menuTwo_infochange()
+                                # Change ID
+                                if infoChange == 1:
+                                    initInventory.change_product_price()
+                                    enter()
+                                # Change Quantity
+                                elif infoChange == 2:
+                                    initInventory.change_product_quantity()
+                                    enter()
+                                # Change Price
+                                elif infoChange == 3:
+                                    initInventory.change_product_id()
+                                    enter()
+                                # Go back
+                                elif infoChange == 4:
+                                    break
+                        # Go back
+                        elif subMenuTwo == 5:
+                            break
+                # Screen for "add/remove catagories"
+                elif subMenu == 3:
+                    while True:
+                        subMenuThree = sub_menuthree()
+                        # Create a new Catagory and a new product
+                        if subMenuThree == 1:
+                            initInventory.add_to_inventory_new_category()
+                            enter()
+                        # Delete a existing category
+                        elif subMenuThree == 2:
+                            list_all_catagories(initInventory)
+                            initInventory.deleting_a_category()
+                            enter()
+                        # Go back
+                        elif subMenuThree == 3:
+                            break
+                # Screen for "Total inventory price"
+                elif subMenu == 4:
+                    print_total_inventory_price(initInventory)
+                    enter()
+                # Screen for "Full inventory list"
+                elif subMenu == 5:
+                    list_all_inventory(initInventory)
+                    enter()
+                # Back key to go back to sub menu
+                elif subMenu == 6:
+                    break
+        # Pogram Info 
+        elif mainMenu == 2:
+            pass
+            break
+        # Quit Program
+        elif mainMenu == 3:
+            print("Thank you!")
+            break
+
+if __name__ == "__main__":
+    main()
