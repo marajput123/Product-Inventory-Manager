@@ -12,156 +12,159 @@ class Catagory():
 class Inventory:
 
     def __init__(self):
-        self.inventory_raw = {}
+        self.inventoryLog = {}
+        self.idLog = []
+
     # THIS IS FOR CREATING A NEW CATAGORY AND ADDING NEW PRODUCTS
-    def add_to_inventory_new_catagory(self):
+    def add_to_inventory_new_category(self):
         print("\t\t---Creating a new Catagory with Product---")
         try:
-            catagory=Catagory(input("Catagory Name to create: ").capitalize())
-            if catagory.name in self.inventory_raw.keys():
-                print("Error, {} has already been created".format(catagory.name))
+            category=Catagory(input("Catagory Name to create: ").capitalize())
+            if category.name in self.inventoryLog.keys():
+                print("--Error, {} has already been created--".format(category.name))
             else:
                 product=Product(input('Product Name: ').capitalize(), int(input("ID: ")),\
                 int(input("Quantity: ")), float(input("Price: $")))
-                self.inventory_raw.update({catagory.name : {product.name : [product.id, product.quantity, product.price]}})
+                if product.id in self.idLog:
+                    print("--A item already exists with that id--")
+                else:
+                    self.inventoryLog.update({category.name : {product.name : [product.id, product.quantity, product.price]}})
+                    self.idLog.append(product.id)
+                    print("--{} added to {}--".format(product.name, category.name))
         except:
             print("--Error--\n--Make sure to fill in all info correctly--")
 
-
-    #  THIS ASKS FOR A NEW PRODUCT TO BE ADDED INTO THE EXISTING CATAGORY
-    def add_product_to_existing_catagory(self):
-        print("\t\t---Adding products to existing Catagories---")
-
-        def inventory_keys():
+    # HELPER FUNCTION TO LIST ALL THE CATEGORIES
+    def inventory_keys(self):
             def yield_keys(dictionary):
-                index = 0
                 for keys in dictionary:
-                    index += 1
-                    yield "{}.{}".format(index,keys) 
-            for catagory_key in yield_keys(self.inventory_raw):
-                print(catagory_key)
-        inventory_keys()
-        
-        # this asks for the catagory
+                    yield "- {}".format(keys) 
+            for category_key in yield_keys(self.inventoryLog):
+                print(category_key)
+
+    #ASKS FOR A NEW PRODUCT TO BE ADDED INTO THE EXISTING CATAGORY
+    def add_product_to_existing_category(self):
+        print("\t\t---Adding products to existing Catagories---")
+        self.inventory_keys()
+        # asks for the category
         try:
-            catagory=Catagory(input("Catagory Name: ").capitalize())
-            if catagory.name not in inventory.inventory_raw.keys():
-                print("--Error: {} has not been created--".format(catagory.name))
+            category=Catagory(input("Catagory Name: ").capitalize())
+            if category.name not in self.inventoryLog.keys():
+                print("--Error: {} has not been created--".format(category.name))
             else:
                 product=Product(input('Product Name: ').capitalize(), int(input("ID: ")),\
                 int(input("Quantity: ")), float(input("Price: $")))
-                if product.name in inventory.inventory_raw[catagory.name]:
-                    print("--Error: Item already in the given Catagory")
+                if product.name in self.inventoryLog[category.name]:
+                    print("--Error: Item already in the given Catagory--")
+                elif product.id in self.idLog:
+                    print("--A item already exists with that id--")
                 else:
-                    self.inventory_raw[catagory.name][product.name] = [product.id, product.quantity, product.price]
+                    self.inventoryLog[category.name][product.name] = [product.id, product.quantity, product.price]
+                    self.idLog.append(product.id)
+                    print("--{} added to {}--".format(product.name, category.name))
         except:
             print("---Make sure to fill in all info correctly---")
     
     # THIS IS TO DELETE A CATAGORY
-    def deleting_a_catagory(self):
+    def deleting_a_category(self):
         print("\t\t---Deleting A Catagory---")
-        def inventory_keys():
-            def yield_keys(dictionary):
-                index = 0
-                for keys in dictionary:
-                    index += 1
-                    yield "{}.{}".format(index,keys) 
-            for catagory_key in yield_keys(self.inventory_raw):
-                print(catagory_key)
-        inventory_keys()
-        catagory=Catagory(input("Catagory Name to delete: ").capitalize())
-        if catagory.name in self.inventory_raw:
-            print('Catagory deleted')
-            del self.inventory_raw[catagory.name]
+    
+        self.inventory_keys()
+        category=Catagory(input("Catagory Name to delete: ").capitalize())
+        if category.name in self.inventoryLog:
+            print('--Catagory deleted--')
+            del self.inventoryLog[category.name]
         else:
             print('---Catagory not found---')
    
     # TO DELETE PRODUCTS INSIDE CATAGORIES
     def delete_products_inside_catagories(self):
         print("\t\t---Deleting Products inside Catagories---")
-        
-        def inventory_keys():
-            def yield_keys(dictionary):
-                index = 0
-                for keys in dictionary:
-                    index += 1
-                    yield "{}.{}".format(index,keys) 
-            for catagory_key in yield_keys(self.inventory_raw):
-                print(catagory_key)
-        inventory_keys()
+
+        self.inventory_keys()
 
         # Ask For Catagory Name:
-        catagory=Catagory(input("Catagory Name to create: ").capitalize())
-        if catagory.name not in inventory.inventory_raw.keys():
-            print("--Error: {} does not exist--".format(catagory.name))
+        category=Catagory(input("Catagory Name to search: ").capitalize())
+        if category.name not in self.inventoryLog.keys():
+            print("--Error: {} does not exist--".format(category.name))
         else:
             product=Product(input('Product Name: ').capitalize())
             try:
-                if catagory.name != "":
-                    del self.inventory_raw[catagory.name][product.name]
-                else:
-                    for products in self.inventory_raw.values():
-                        if product.name in products:
-                            del products[product.name]
+                del self.inventoryLog[category.name][product.name]
+                print('--deleted {}--'.format(product.name))
             except:
                     print("---No product found in the given Catagory---")
+    
+    #Check if the category exists
+    def categoryCheck(self, categoryName):
+        if self.inventoryLog == "":
+            print("The inventory is empty")
+            return False
+        elif categoryName not in self.inventoryLog:
+            print("--{} does not exist--".format(categoryName))
+            return False
+        else:
+            return True
+    #Check if the product exists
+    def productCheck(self, productName, categoryName):
+        if productName not in self.inventoryLog[categoryName]:
+            print("--{} does not exist in {}--".format(productName, categoryName))
+            return False
+        else:
+            return True
 
-    # To Change the price of the product
+    # TO CHANGE THE PRODUCT PRICE
     def change_product_price(self):
         print("\t\t---Changing Product Price---")
-        try:
-            counter = 0
-            product_name = Product(input("Product Name: ").capitalize())
-            new_price = float(input("The new price will be: $"))
-            for products in inventory.inventory_raw.values():
-                for product, info in products.items():
-                    if product == product_name:
-                        counter += 1
-                        info[2] = new_price
-            if counter == 0:
-                print("Invalid amount or Product not found")
-            else:
-                print("---Price Changed---")
-        except:
-            print("Invalid amount or Product not found")
+        self.inventory_keys()
+        category_name = input("Catagory Name to search: ").capitalize()
+        if self.categoryCheck(category_name):
+            product_name = input("Product Name: ").capitalize()
+            if self.productCheck(product_name, category_name):
+                try:
+                    new_price = float(input("The new price will be: $"))    
+                    self.inventoryLog[category_name][product_name][2] = new_price
+                    print("--{}'s price changed--".format(product_name.capitalize()))
+                except:
+                    print("--Error. Invalid price--")
 
-    #  To change products Quantity
+    #  TO CHANGE THE PRODUCT QUANTITY
     def change_product_quantity(self):
         print("\t\t---Changing Product Quantity---")
-        try:
-            counter = 0
-            product_name = Product(input("Product Name: ").capitalize())
-            new_quantity = int(input("The new quantity will be: "))
-            for products in inventory.inventory_raw.values():
-                for product, info in products.items():
-                    if product == product_name:
-                        counter += 1
-                        info[1] = new_quantity
-            if counter == 0:
-                print("Invalid amount or Product not found")
-            else:
-                print("---Quantity Changed---")
-        except:
-            print("Invalid amount or Product not found")
+        self.inventory_keys()
+        category_name = input("Catagory Name to search: ").capitalize()
+        if self.categoryCheck(category_name):
+            product_name = input("Product Name: ").capitalize()
+            if self.productCheck(product_name, category_name):
+                try:
+                    new_quantity = int(input("The new quantity will be: "))    
+                    self.inventoryLog[category_name][product_name][1] = new_quantity
+                    print("--{}'s quantity changed--".format(product_name.capitalize()))
+                except:
+                    print("--Error. Invalid quantity--")
 
     # To change Product ID
     def change_product_id(self):
         print("\t\t---Changing Product ID---")
-        try:
-            counter = 0
-            product_name = Product(input("Product Name: ").capitalize())
-            new_Id = int(input("The new ID will be: "))
-            for products in inventory.inventory_raw.values():
-                for product, info in products.items():
-                    if product == product_name:
-                        counter += 1
-                        info[0] = new_Id
-            if counter == 0:
-                print("Invalid amount or Product not found")
-            else:
-                print("---ID Changed---")
-        except:
-            print("Invalid amount or Product not found")
+        self.inventory_keys()
+        category_name = input("Catagory Name to search: ").capitalize()
+        if self.categoryCheck(category_name):
+            product_name = input("Product Name: ").capitalize()
+            if self.productCheck(product_name, category_name):
+                try:
+                    new_id = int(input("The new Id will be: ")) 
+                    if new_id not in self.idLog:   
+                        self.inventoryLog[category_name][product_name][0] = new_id
+                        print("--{}'s id changed--".format(product_name.capitalize()))
+                    else:
+                        print("--Error. Id already exists.")
+                except:
+                    print("--Error. Invalid Id--")
+
+
+#
+# END OF CLASS
+#
      
 inventory = Inventory()          
 
@@ -169,9 +172,9 @@ inventory = Inventory()
 def list_all_catagories():
     print("\t\t---Listing All Catagories---")
     try:
-        if inventory.inventory_raw != "":
+        if inventory.inventoryLog != "":
             print("All Catagories Listed: ")
-            for count, catagories in enumerate(inventory.inventory_raw, 1):
+            for count, catagories in enumerate(inventory.inventoryLog, 1):
                 print("{}. {}".format(count, catagories))
         else:
             print("No Catagories Created")
@@ -181,15 +184,15 @@ def list_all_catagories():
         print("---Search Complete---")
 
 # lIST ALL PRODUCTS IN CATAGORY
-def list_all_products_in_catagory():
+def list_all_products_in_category():
     print("\t\t--Listing Products in Catagory--")
-    catagory = Catagory(input("Catagory to Search: ").capitalize())
-    if catagory.name not in inventory.inventory_raw.keys():
-        print("No such catagory\n---Search Complete---")
+    category = Catagory(input("Catagory to Search: ").capitalize())
+    if category.name not in inventory.inventoryLog.keys():
+        print("No such category\n---Search Complete---")
     else:
         try:
-            print("Products in {}:".format(catagory.name))
-            for count, products in enumerate(inventory.inventory_raw[catagory.name].keys(), 1):
+            print("Products in {}:".format(category.name))
+            for count, products in enumerate(inventory.inventoryLog[category.name].keys(), 1):
                 print("{}. {}".format(count, products))
         except:
             print("No Products in Catagory")
@@ -199,17 +202,17 @@ def list_all_products_in_catagory():
 # LIST ALL PRODUCT INFO THROUGH NAME
 def search_product_through_name():
     print("\t\t--Searching Product through Name--")
-    catagory = Catagory(input("Catagory Name(Optional): ").capitalize())
+    category = Catagory(input("Catagory Name(Optional): ").capitalize())
     product = Product(input("Product Name: ").capitalize())
     counter = 0
     try:
-        if catagory.name == "" and product.name == "":
+        if category.name == "" and product.name == "":
             print("Please fill in at least the Product name")
-        elif catagory.name != "":
-            product_info = inventory.inventory_raw[catagory.name][product.name]
+        elif category.name != "":
+            product_info = inventory.inventoryLog[category.name][product.name]
             print("ID: {}\nQuantity: {}\nPrice: ${}".format(product_info[0], product_info[1], product_info[2]))
-        elif catagory.name == "":
-            for products in inventory.inventory_raw.values():
+        elif category.name == "":
+            for products in inventory.inventoryLog.values():
                 if product.name in products:
                     counter+=1
                     info = products[product.name]
@@ -230,7 +233,7 @@ def search_product_through_ID():
         if product_id.id == "":
             return
         else:
-            for product in inventory.inventory_raw.values():
+            for product in inventory.inventoryLog.values():
                 for product_name, info in product.items():
                     if info[0] == int(product_id.id):
                         counter += 1
@@ -246,17 +249,17 @@ def search_product_through_ID():
 def print_total_inventory_price():
     print("\t\t---Total Inventory Price---")
     product_price=0
-    for products in inventory.inventory_raw.values():
+    for products in inventory.inventoryLog.values():
         for info in products.values():
-            product_price+=info[2]
+            product_price+=(info[2]*info[1])
     print("${}".format(product_price))
 
 # LIST THE WHOLE INVENTORY
 def list_all_inventory():
     print("\t\t---Listing All Inventory---")
     try:
-        for catagory, products in inventory.inventory_raw.items():
-            print("Catagory-{}".format(catagory))
+        for category, products in inventory.inventoryLog.items():
+            print("Catagory-{}".format(category))
             for product, info in products.items():
                 print(" {}:\n   ID: {}\n   Quantity: {}\n   Price: ${}".format(product, info[0], info[1], info[2]))
     except:
@@ -315,7 +318,7 @@ def sub_menuOneCata():
 def sub_menuTwo():
     while True:
         print("\n\n\n\t\t---Add/Remove Products---\n1. Create a new Product in a new Catagory\n2. Add a new product in a Existing Catagory\n\
-3. Delete a Product in a Exisiting catagory\n4. Change Product's Info\n5. Go Back")
+3. Delete a Product in a Exisiting category\n4. Change Product's Info\n5. Go Back")
         try:
             user_input=int(input("Navigate to (Enter the index): "))
             if user_input in (1,2,3,4,5):
@@ -377,7 +380,7 @@ while True:
                     elif subMenuOne == 2:
                         search_product_through_name()
                         enter()
-                    # Search catagory
+                    # Search category
                     elif subMenuOne == 3:
                         while True:
                             subMenuOneCata = sub_menuOneCata()
@@ -387,7 +390,7 @@ while True:
                                 enter()
                             # All Products in Catagories
                             elif subMenuOneCata == 2:
-                                list_all_products_in_catagory()
+                                list_all_products_in_category()
                                 enter()
                             # Go Back
                             elif subMenuOneCata ==3:
@@ -399,15 +402,15 @@ while True:
             elif subMenu == 2:
                 while True:
                     subMenuTwo = sub_menuTwo()
-                    # Create a new product and new catagory
+                    # Create a new product and new category
                     if subMenuTwo == 1:
-                        inventory.add_to_inventory_new_catagory()
+                        inventory.add_to_inventory_new_category()
                         enter()
-                    # Add a new product ot existing catagory
+                    # Add a new product ot existing category
                     elif subMenuTwo == 2:
-                        inventory.add_product_to_existing_catagory()
+                        inventory.add_product_to_existing_category()
                         enter()
-                    # Delete a product in a existing catagory
+                    # Delete a product in a existing category
                     elif subMenuTwo == 3:
                         inventory.delete_products_inside_catagories()
                         enter()
@@ -439,12 +442,12 @@ while True:
                     subMenuThree = sub_menuthree()
                     # Create a new Catagory and a new product
                     if subMenuThree == 1:
-                        inventory.add_to_inventory_new_catagory()
+                        inventory.add_to_inventory_new_category()
                         enter()
-                    # Delete a existing catagory
+                    # Delete a existing category
                     elif subMenuThree == 2:
                         list_all_catagories()
-                        inventory.deleting_a_catagory()
+                        inventory.deleting_a_category()
                         enter()
                     # Go back
                     elif subMenuThree == 3:
