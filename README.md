@@ -15,8 +15,12 @@ Users can:
 - Search:
   - List all categories
   - List all categories and products
-  - search product through id (not working, will be fixed soon)
-  - search product through name (not working, will be fixed soon)
+  - search product through id ~~(not working, will be fixed soon)~~
+  - search product through name ~~(not working, will be fixed soon)~~
+- Update:
+  - Update product id (not working, will be fixed soon)
+  - Update product price (not working, will be fixed soon)
+  - Update product quantity (not working, will be fixed soon)
   
  ## Future updates?
  I do not plan on updating the application, but I will be fixing the any bugs that may appear in the future.
